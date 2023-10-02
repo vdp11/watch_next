@@ -8,7 +8,7 @@ def read_movie_descriptions():
             movie_descriptions.append(line.strip())
     return movie_descriptions
 
-# Load the spaCy language model (you can change the model to en_core_web_sm by replacing en_core_web_md)
+# Load the spaCy language model (you can change the model to en_core_web_md by replacing en_core_web_sm)
 nlp = spacy.load("en_core_web_md")
 
 # Calculate similarity scores between the given description and all other movie descriptions
@@ -31,21 +31,38 @@ def recommend_movie(target_description, movie_descriptions, movie_titles):
     if not similarity_scores:
         return "No movies available."
     
+    # Print movie titles and their similarity scores
+    for title, score in zip(movie_titles, similarity_scores):
+        print(f"Movie: {title}, Similarity Score: {score}")
+
     max_similarity_index = similarity_scores.index(max(similarity_scores))
-    return movie_titles[max_similarity_index]
+    recommended_movie = movie_titles[max_similarity_index]
+    similarity_score = similarity_scores[max_similarity_index]
+    
+    return recommended_movie, similarity_score
 
 if __name__ == "__main__":
     movie_descriptions = read_movie_descriptions()
     
-
-    movie_titles = ["Movie A", "Movie B", "Movie C", "Movie D", "Movie E", "Movie F", "Movie G", "Movie H", "Movie I", "Movie J"]  # Replace with your movie titles
+    movie_titles = [
+        "Movie A :When Hiccup discovers Toothless isn't the only Night Fury, he must seek The Hidden World, a secret Dragon Utopia before a hired tyrant named Grimmel finds it first.", 
+        "Movie B :After the death of Superman, several new people present themselves as possible successors.", 
+        "Movie C :A darkness swirls at the center of a world-renowned dance company, one that will engulf the artistic director, an ambitious young dancer, and a grieving psychotherapist. Some will succumb to the nightmare. Others will finally wake up.", 
+        "Movie D :A humorous take on Sir Arthur Conan Doyle's classic mysteries featuring Sherlock Holmes and Doctor Watson.", 
+        "Movie E :A 16-year-old girl and her extended family are left reeling after her calculating grandmother unveils an array of secrets on her deathbed.", 
+        "Movie F :In the last moments of World War II, a young German soldier fighting for survival finds a Nazi captain's uniform. Impersonating an officer, the man quickly takes on the monstrous identity of the perpetrators he is trying to escape from.", 
+        "Movie G :The world at an end, a dying mother sends her young son on a quest to find the place that grants wishes.", 
+        "Movie H :A musician helps a young singer and actress find fame, even as age and alcoholism send his own career into a downward spiral.", 
+        "Movie I :Corporate analyst and single mom, Jen, tackles Christmas with a business-like approach until her uncle arrives with a handsome stranger in tow.", 
+        "Movie J :Adapted from the bestselling novel by Madeleine St John, Ladies in Black is an alluring and tender-hearted comedy drama about the lives of a group of department store employees in 1959 Sydney."
+    ]  
     
     if len(movie_descriptions) != len(movie_titles):
         print("Error: The number of movie descriptions and titles should match.")
     else:
         target_description = "Will he save their world or destroy it? When the Hulk becomes too dangerous for the Earth, the Illuminati trick Hulk into a shuttle and launch him into space to a planet where the Hulk can live in peace. Unfortunately, Hulk lands on the planet Sakaar where he is sold into slavery and trained as a gladiator."
         
-        target_doc = nlp(target_description)
+        recommended_movie, similarity_score = recommend_movie(target_description, movie_descriptions, movie_titles)
         
-        recommended_movie = recommend_movie(target_description, movie_descriptions, movie_titles)
         print(f"Recommended Movie: {recommended_movie}")
+        print(f"Similarity Score: {similarity_score}")
